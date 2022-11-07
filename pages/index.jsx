@@ -1,9 +1,26 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import db from './firebase';
+import { collection, getDocs, doc, onSnapshot } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [posts, setPosts] = useState([{ text: 'hoge', title: 'uga' }]);
 
+  useEffect(() => {
+    //データベースからデータを取得する
+    const postData = collection(db, 'posts');
+    getDocs(postData).then((snapShot) => {
+      setPosts(snapShot.docs.map((doc) => ({ ...doc.data() })));
+    });
+
+    // リアルタイムで取得
+    // onSnapshot(collection(db, 'posts'), (post) => {
+    //   setPosts(post.docs.map((doc) => ({ ...doc.data() })));
+    // });
+  }, []);
+  console.log(posts);
   return (
     <div className={styles.container}>
       <Head>
@@ -12,16 +29,22 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        
-      </main>
+      <div className="App">
+        <p>hoge</p>
+        {posts.map((post) => {
+          return (
+          <div key={post.title}>
+            <h1>{post.text}</h1>
+          </div>
+          );
+        })}
+      </div>
 
       <footer className={styles.footer}>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
-          rel="noopener noreferrer"
-        >
+          rel="noopener noreferrer">
           Powered by{' '}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
@@ -29,5 +52,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  )
+  );
 }
