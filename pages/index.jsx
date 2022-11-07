@@ -16,9 +16,9 @@ export default function Home() {
     });
 
     // リアルタイムで取得
-    // onSnapshot(collection(db, 'posts'), (post) => {
-    //   setPosts(post.docs.map((doc) => ({ ...doc.data() })));
-    // });
+    onSnapshot(collection(db, 'posts'), (post) => {
+      setPosts(post.docs.map((doc) => ({ ...doc.data() })));
+    });
   }, []);
   console.log(posts);
   return (
